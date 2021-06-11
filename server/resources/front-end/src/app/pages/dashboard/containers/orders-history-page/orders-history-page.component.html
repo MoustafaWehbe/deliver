@@ -1,0 +1,46 @@
+<app-layout>
+  <mat-toolbar class="page-header" role="heading">
+    <h1>Orders History</h1>
+  </mat-toolbar>
+
+  <div class="tables-wrapper">
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+    <div class="search" (click)="showInput()" [ngClass]="{'show-search-input': isShowInput}">
+      <mat-icon (click)="search()" class="search-icon" [ngClass]="{'open-search': isShowInput}">search</mat-icon>
+      <input *ngIf="isShowInput" (keyup.enter)="search()" [(ngModel)]="searchModel" class="search-input"
+        placeholder="Enter order id...">
+    </div>
+
+    <mat-card-content class="orders-table__content">
+      <table class="orders-table__table" mat-table [dataSource]="dataSource" *ngIf="!isLoading">
+        <ng-container matColumnDef="id">
+          <th class="employee-table__table-header" mat-header-cell *matHeaderCellDef> Order Id </th>
+          <td class="employee-table__table-body" mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th class="employee-table__table-header" mat-header-cell *matHeaderCellDef> Status </th>
+          <td class="employee-table__table-body" mat-cell *matCellDef="let element"> {{element.status}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="updatedBy">
+          <th class="employee-table__table-header" mat-header-cell *matHeaderCellDef> Updated By </th>
+          <td class="employee-table__table-body" mat-cell *matCellDef="let element"> {{element.userName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="updatedAt">
+          <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Updated At </th>
+          <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.created_at | date: 'M/d/yy,
+            h:mm a'}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+        </tr>
+      </table>
+    </mat-card-content>
+  </div>
+
+  <app-footer></app-footer>
+</app-layout>

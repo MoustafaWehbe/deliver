@@ -1,0 +1,13 @@
+<app-layout>
+  <mat-toolbar class="page-header" role="heading">
+    <h1>Users</h1>
+    <button mat-raised-button color="primary" class="orders-table-wrapper__transferBtn" (click)="createUser()">Create
+      User</button>
+  </mat-toolbar>
+
+  <div class="tables-wrapper">
+    <app-users-table [reload]="reload"></app-users-table>
+  </div>
+
+  <app-footer></app-footer>
+</app-layout>

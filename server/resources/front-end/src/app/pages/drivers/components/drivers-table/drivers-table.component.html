@@ -1,0 +1,48 @@
+<mat-card class="orders-table-wrapper">
+
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  <mat-card-title class="orders-table-wrapper__header">
+    <p *ngIf="!isShowFilterInput" class="orders-table-wrapper__title">Drivers List</p>
+    <div *ngIf="isShowFilterInput" class="orders-table-wrapper__search">
+      <div class="orders-table-wrapper__icon-wrapper">
+        <mat-icon class="orders-table-wrapper__icon">search</mat-icon>
+      </div>
+      <input matInput class="orders-table-wrapper__search-input" (keyup)="applyFilter($event)">
+      <button class="orders-table-wrapper__button" mat-mini-fab (click)="showFilterInput()">
+        <mat-icon class="orders-table-wrapper__icon">close</mat-icon>
+      </button>
+    </div>
+    <div>
+
+      <button class="orders-table-wrapper__button" mat-mini-fab (click)="showFilterInput()">
+        <mat-icon class="orders-table-wrapper__icon">search</mat-icon>
+      </button>
+    </div>
+
+  </mat-card-title>
+  <mat-card-content class="orders-table__content">
+    <table class="orders-table__table" mat-table [dataSource]="dataSource" *ngIf="!isLoading">
+      <!-- Id Column -->
+      <ng-container matColumnDef="id">
+        <th class="employee-table__table-header" mat-header-cell *matHeaderCellDef> Id </th>
+        <td class="employee-table__table-body" mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th class="employee-table__table-header" mat-header-cell *matHeaderCellDef> Name </th>
+        <td class="employee-table__table-body" mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <!-- Phone Column -->
+      <ng-container matColumnDef="phone">
+        <th class="employee-table__table-header" mat-header-cell *matHeaderCellDef> Phone </th>
+        <td class="employee-table__table-body" mat-cell *matCellDef="let element"> {{element.phone}}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+      </tr>
+    </table>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,98 @@
+<h2 mat-dialog-title>{{mainObj.action}} order</h2>
+<mat-dialog-content class="orders-form">
+  <form class="form" [formGroup]="ordersForm" (ngSubmit)="submitForm()">
+    <mat-form-field class="mat" [floatLabel]="'auto'" [floatLabel]="'auto'" appearance="outline">
+      <mat-label>Shipment Code:</mat-label>
+      <input matInput placeholder="Shipment code" required type="text" formControlName="shipmentCode">
+    </mat-form-field>
+    <mat-form-field class="mat" [floatLabel]="'auto'" appearance="outline">
+      <mat-label>Receiver Name:</mat-label>
+      <input matInput placeholder="Receiver name" type="text" required formControlName="receiverName">
+    </mat-form-field>
+    <mat-form-field class="mat" [floatLabel]="'auto'" appearance="outline">
+      <mat-label>Receiver Phone:</mat-label>
+      <input matInput placeholder="Receiver phone" type="tel" required formControlName="receiverPhone">
+    </mat-form-field>
+    <!-- <mat-form-field class="mat" [floatLabel]="'auto'" appearance="outline">
+      <mat-label>Receiver Address:</mat-label>
+      <input matInput placeholder="Receiver address" required type="text" formControlName="receiverAddress">
+    </mat-form-field> -->
+    <mat-form-field [floatLabel]="'auto'" class="mat" appearance="outline">
+      <mat-label>Receiver Address</mat-label>
+      <input type="text" placeholder="pick one" matInput formControlName="receiverAddress" [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of addressFilteredOptions | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field class="mat" [floatLabel]="'auto'" appearance="outline">
+      <mat-label>Receiver Landmark:</mat-label>
+      <input matInput placeholder="Receiver landmark" required type="text" formControlName="receiverLandmark">
+    </mat-form-field>
+    <mat-form-field class="mat" [floatLabel]="'auto'" appearance="outline">
+      <mat-label>Item description:</mat-label>
+      <input matInput placeholder="Item description" type="textarea" formControlName="itemDescription">
+    </mat-form-field>
+    <mat-form-field class="mat" [floatLabel]="'auto'" appearance="outline">
+      <mat-label>Comment:</mat-label>
+      <input matInput placeholder="Comment" type="textarea" formControlName="comment">
+    </mat-form-field>
+    <mat-form-field class="mat" [floatLabel]="'auto'" appearance="outline">
+      <mat-label>Cash Collection:</mat-label>
+      <input matInput
+        [placeholder]="'Fees' + ((userRole != 'admin' &&  mainObj.action ==='update') ? '(Only admin can update the fees)' : '') "
+        type="number" required formControlName="fees">
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'" class="mat" appearance="outline">
+      <mat-label>Currency</mat-label>
+      <mat-select required formControlName="currency">
+        <mat-option [value]="st" *ngFor="let st of currency">{{st}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'" class="mat" appearance="outline">
+      <mat-label>Driver(Only manager can assign a driver)</mat-label>
+      <mat-select formControlName="driverId">
+        <mat-option [value]="st.id" *ngFor="let st of drivers">{{st.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'" class="mat" appearance="outline">
+      <mat-label>Service type</mat-label>
+      <mat-select required formControlName="serviceType">
+        <mat-option [value]="st" *ngFor="let st of serviceType">{{st}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'" class="mat" appearance="outline" *ngIf="userRole !== 'client'">
+      <mat-label>Branch</mat-label>
+      <mat-select formControlName="branchId">
+        <mat-option [value]="st.id" *ngFor="let st of branches">{{st.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'" class="mat" appearance="outline" *ngIf="userRole !== 'client'">
+      <mat-label>Company</mat-label>
+      <mat-select formControlName="customerId">
+        <mat-option [value]="st.id" *ngFor="let st of users">{{st.companyName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="mat" [floatLabel]="'auto'" appearance="outline">
+      <mat-label>Weight in Kg</mat-label>
+      <input matInput [placeholder]="'Weight in Kg'" type="text" required formControlName="weight">
+    </mat-form-field>
+    <mat-form-field [floatLabel]="'auto'" class="mat" appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select required formControlName="status">
+        <mat-option [disabled]="st.disabled" [value]="st.value" *ngFor="let st of statuses">{{st.value}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- <mat-form-field appearance="fill"> -->
+    <mat-checkbox formControlName="isPaid" class="mat">
+      Close
+    </mat-checkbox>
+    <!-- </mat-form-field> -->
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close (click)="close()">Cancel</button>
+  <button mat-button cdkFocusInitial (click)="submitForm()">{{mainObj.action}}</button>
+</mat-dialog-actions>

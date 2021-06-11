@@ -1,0 +1,75 @@
+<h1 mat-dialog-title>Create a new User</h1>
+<mat-dialog-content class="users-form">
+  <form class="form" [formGroup]="usersForm" (ngSubmit)="submitForm()">
+
+    <mat-form-field [floatLabel]="'auto'" appearance="outline" class="mat">
+      <input matInput placeholder="username" formControlName="userName" required>
+      <mat-label>Username:</mat-label>
+      <mat-icon matSuffix>person_outline</mat-icon>
+      <mat-hint>Use unique username</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="mat" [floatLabel]="'auto'" class="example-full-width">
+      <mat-label>Company name</mat-label>
+      <mat-hint>Input the fully company name</mat-hint>
+      <input type="text" placeholder="pick or type a name" aria-label="Company" matInput formControlName="companyName"
+        [matAutocomplete]="auto">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <p>
+      <mat-form-field [floatLabel]="'auto'" appearance="outline" class="mat">
+        <input matInput placeholder="location Address" formControlName="locationAddress" required>
+        <mat-label>Location Address:</mat-label>
+        <mat-hint>Input the fully location address</mat-hint>
+      </mat-form-field>
+      <mat-form-field class="mat" appearance="outline" [floatLabel]="'auto'">
+        <mat-label>Email Address:</mat-label>
+        <input matInput placeholder="Your email" formControlName="email" type="email" required>
+        <mat-icon matSuffix>mail_outline</mat-icon>
+        <mat-hint>Input the fully qualified email address</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <!-- Outline form field -->
+    <p>
+      <mat-form-field [floatLabel]="'auto'" class="mat" appearance="outline">
+        <input matInput formControlName="phone" placeholder="Phone Number" required>
+        <mat-label>Phone Number</mat-label>
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-hint>Related Phone Number</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="mat" [floatLabel]="'auto'">
+        <mat-label>Password</mat-label>
+        <input matInput placeholder="Your password" formControlName="password" type="password" required>
+        <mat-icon matSuffix>lock</mat-icon>
+        <mat-hint>Min 8 char 1 number and 1 alpha</mat-hint>
+      </mat-form-field>
+    </p>
+    <section class="mat">
+      <!-- <h3>Role</h3>
+    <mat-checkbox formControlName="role" (change)="checkboxChange($event)" value="admin" class="example-margin">Admin</mat-checkbox>
+    <mat-checkbox formControlName="role" (change)="checkboxChange($event)" value="client" class="example-margin" class="mat">Client</mat-checkbox>
+
+    <mat-checkbox class="example-margin" formControlName="role" [(indeterminate)]="indeterminate"
+      [labelPosition]="labelPosition" (change)="checkboxChange($event)" value="manager" [disabled]="userRole == 'admin'" class="mat">
+      Manager
+    </mat-checkbox> -->
+      <mat-form-field [floatLabel]="'auto'" appearance="outline" class="mat">
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role">
+          <mat-option [value]="st" *ngFor="let st of roles">{{st}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field><br>
+    </section>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close (click)="close()">Cancel</button>
+  <button mat-button cdkFocusInitial (click)="submitForm()">Create user</button>
+</mat-dialog-actions>

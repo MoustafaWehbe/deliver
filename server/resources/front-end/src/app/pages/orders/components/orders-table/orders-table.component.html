@@ -1,0 +1,290 @@
+<mat-card class="orders-table-wrapper">
+
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  <mat-card-title class="orders-table-wrapper__header">
+    <p *ngIf="!isShowFilterInput" class="orders-table-wrapper__title">Orders List</p>
+    <div *ngIf="isShowFilterInput" class="orders-table-wrapper__search">
+      <div class="orders-table-wrapper__icon-wrapper">
+        <mat-icon class="orders-table-wrapper__icon">search</mat-icon>
+      </div>
+      <input matInput class="orders-table-wrapper__search-input" (keyup)="applyFilter($event)">
+      <button class="orders-table-wrapper__button" mat-mini-fab (click)="showFilterInput()">
+        <mat-icon class="orders-table-wrapper__icon">close</mat-icon>
+      </button>
+    </div>
+    <div>
+      <!-- <button mat-flat-button color="accent" class="orders-table-wrapper__transferBtn" (click)="printOrder()">Print
+        order(s)</button>
+      <button mat-flat-button color="accent" *ngIf="userRole==='manager'" class="orders-table-wrapper__transferBtn"
+        (click)="assignToDriver()">Assign
+        to driver</button>
+      <button mat-flat-button color="accent" class="orders-table-wrapper__transferBtn" (click)="cancelOrders()">Cancel
+        order(s)</button> -->
+      <button mat-flat-button color="warn" *ngIf="userRole=='admin'" class="orders-table-wrapper__all"
+        (click)="deleteSelected()">Delete</button>
+      <button mat-raised-button color="primary" *ngIf="userRole=='manager' || userRole=='admin'"
+        class="orders-table-wrapper__all" (click)="transferSelected()">Transfer to branch</button>
+
+      <span class="orders-table-wrapper__all">
+        <button color="accent" mat-raised-button [matMenuTriggerFor]="menu1">
+          {{filterByText}}<mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #menu1="matMenu">
+          <button (click)="onFilterSelect(action)" *ngFor="let action of filterByOptions" mat-menu-item>
+            {{action.name}}
+          </button>
+        </mat-menu>
+      </span>
+      <span class="orders-table-wrapper__all">
+        <button color="accent" mat-raised-button [matMenuTriggerFor]="menu2">
+          {{moreActionsText}}<mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #menu2="matMenu">
+          <button (click)="onActionSelect(action)" *ngFor="let action of moreActions" mat-menu-item>
+            {{action.name}}
+          </button>
+        </mat-menu>
+      </span>
+      <span class="orders-table-wrapper__all">
+        <button mat-flat-button color="warn" *ngIf="currentFilter" class="orders-table-wrapper__all"
+          (click)="clearFilter()">Clear {{currentFilter.key}} filter</button>
+      </span>
+      <button class="orders-table-wrapper__button" mat-mini-fab (click)="showFilterInput()">
+        <mat-icon class="orders-table-wrapper__icon">search</mat-icon>
+      </button>
+    </div>
+
+  </mat-card-title>
+  <mat-card-content class="orders-table__content" style="height: 60vh;   overflow: auto;  ">
+    <table class="orders-table__table" mat-table [dataSource]="dataSource" *ngIf="!isLoading">
+
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th class="orders-table__table-checkbox" mat-header-cell *matHeaderCellDef>
+          <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+          </mat-checkbox>
+        </th>
+        <td class="orders-table__table-checkbox" mat-cell *matCellDef="let row">
+          <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
+            [aria-label]="checkboxLabel(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Id Column -->
+      <ng-container matColumnDef="id">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Code </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+      <!-- ShipmentCode Column -->
+      <ng-container matColumnDef="shipmentCode">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Shipment Code </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.shipmentCode}} </td>
+      </ng-container>
+
+      <!-- ReceiverName Column -->
+      <ng-container matColumnDef="receiverName">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Receiver Name </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.receiverName}} </td>
+      </ng-container>
+
+      <!-- Receiver Phone Column -->
+      <ng-container matColumnDef="receiverPhone">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Receiver Phone </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.receiverPhone}} </td>
+      </ng-container>
+
+      <!-- Receiver Address Column -->
+      <ng-container matColumnDef="receiverAddress">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Receiver Address </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.receiverAddress}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="receiverLandmark">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Receiver Landmark </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.receiverLandmark}} </td>
+      </ng-container>
+
+      <!-- Fees Column -->
+      <ng-container matColumnDef="fees">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Cash Collection </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.fees + ' ' +
+          (element.currency || '') }}
+        </td>
+      </ng-container>
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Status </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element">
+          <div class="material-table__content-badge" [ngClass]="element['status']">
+            <span>{{element['status']}}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- ShipmentCode Column -->
+      <ng-container matColumnDef="comment">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Comment </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.comment}} </td>
+      </ng-container>
+
+      <!-- ShipmentCode Column -->
+      <ng-container matColumnDef="weight">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Weight </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.weight}} </td>
+      </ng-container>
+      <!-- Service Type Column -->
+      <ng-container matColumnDef="serviceType">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Service Type </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.serviceType}} </td>
+      </ng-container>
+      <!-- Item Description Column -->
+      <ng-container matColumnDef="itemDescription">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Item Description </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.itemDescription}} </td>
+      </ng-container>
+      <!-- Company Name Column -->
+      <ng-container matColumnDef="companyName">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Company Name </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element">
+          {{element.client?.companyName + ' (' + element.client?.phone + ')'}}
+        </td>
+      </ng-container>
+      <!-- Driver Name Column -->
+      <ng-container matColumnDef="driverName">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Driver Name </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element">
+          {{(element.driver?.name || '') + ' (' + (element.driver?.phone || '') + ')'}}
+        </td>
+      </ng-container>
+
+      <!-- Branch Column -->
+      <ng-container matColumnDef="branch">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Branch </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element">
+          {{ transfered ? element.lastTransferBranch?.name : element.branch?.name }}
+        </td>
+      </ng-container>
+
+      <!-- Branch Column -->
+      <ng-container matColumnDef="isPaid">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Closed </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.isPaid ? 'Yes' : 'No'}} </td>
+      </ng-container>
+
+      <!-- Created at Column -->
+      <ng-container matColumnDef="createdAt">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Created At </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.created_at | date: 'M/d/yy,
+          h:mm a'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdBy">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Created By </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.createdBy}} </td>
+      </ng-container>
+
+      <!-- Update Column -->
+      <ng-container matColumnDef="update">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element">
+          <button [disabled]="userRole!='admin' && status=='finished'" mat-flat-button color="accent"
+            class="orders-table-wrapper__deleteBtn" (click)="updateOrder(element, $event)">Update</button>
+        </td>
+      </ng-container>
+
+      <!-- Delay Column -->
+      <ng-container matColumnDef="delay">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element">
+          <button mat-flat-button color="accent" class="orders-table-wrapper__deleteBtn"
+            (click)="delayOrder(element, $event)"> {{element.isDelayed ? 'Mark as non delayed' : 'Delay'}}</button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="confirm">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element">
+          <button mat-flat-button color="accent" class="orders-table-wrapper__deleteBtn"
+            (click)="confirmOrder(element, $event)"> Confirm order</button>
+        </td>
+      </ng-container>
+
+      <!-- print Column
+      <ng-container matColumnDef="print">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element">
+          <button mat-flat-button color="accent" class="orders-table-wrapper__deleteBtn"
+            (click)="printOrder(element)">Print</button>
+        </td>
+      </ng-container> -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+      </tr>
+    </table>
+    <div class="pagination" *ngIf="paginationObj">
+      <mat-paginator [hidePageSize]="true" [pageSize]="paginationObj.per_page" [length]="paginationObj.total"
+        showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
+    </div>
+  </mat-card-content>
+
+</mat-card>
+<div id="orderPrint" *ngIf="ordersToPrint.length > 0" class="printOnly">
+  <div *ngFor="let orderToPrint of ordersToPrint">
+    <div style="width: 100%; text-align:center; background: black">
+      <img style="width: 50%; height: 120px" src="assets/logo/logo-lg.jpeg">
+      <p style="display: inline-block; padding: 20px; margin-right: 20px; vertical-align:top">
+        Id: <br>
+        {{orderToPrint.id}}
+      </p>
+      <p style="display: inline-block; padding: 20px; margin-right: 20px; vertical-align:top">
+        SHIPMENT CODE: <br>
+        {{orderToPrint.shipmentCode}}
+      </p>
+    </div>
+    <div class="float-container" style="page-break-after: always">
+      <div class="float-child">
+        <div style="text-align: center;">
+          <h3>From</h3>
+          <hr>
+        </div>
+        <div>
+          <p> <span class="bold"> Company:</span> {{orderToPrint.client?.companyName}}</p>
+          <!-- <p> <span class="bold">Shipment Code:</span> {{orderToPrint.shipmentCode}}</p> -->
+          <!-- <p *ngIf="userRole!='client' && userRole!='agent'"><span class="bold">Receiver Name:</span>
+            {{orderToPrint.receiverName}}</p>
+          <p *ngIf="userRole!='client' && userRole!='agent'"><span class="bold">Receiver Phone:</span>
+            {{orderToPrint.receiverPhone}}</p>
+          <p *ngIf="userRole!='client' && userRole!='agent'"><span class="bold">Receiver Address:</span>
+            {{orderToPrint.receiverAddress}}</p>
+          <p *ngIf="userRole!='client' && userRole!='agent'"><span class="bold">Receiver Landmark:</span>
+            {{orderToPrint.receiverLandmark}}</p> -->
+          <p><span class="bold">Sevice Type:</span> {{orderToPrint.serviceType}}</p>
+        </div>
+      </div>
+      <div class="float-child">
+        <div style="text-align: center;">
+          <h3>To</h3>
+          <hr>
+        </div>
+        <div>
+          <p> <span class="bold">Id:</span> {{orderToPrint.id}}</p>
+          <p><span class="bold">Receiver Name:</span> {{orderToPrint.receiverName}}</p>
+          <p><span class="bold">Receiver Phone:</span> {{orderToPrint.receiverPhone}}</p>
+          <p><span class="bold">Receiver Address:</span> {{orderToPrint.receiverAddress}}</p>
+          <p><span class="bold">Receiver Landmark:</span> {{orderToPrint.receiverLandmark}}</p>
+          <p><span class="bold">Cash Collection:</span> {{orderToPrint.fees}}</p>
+          <p><span class="bold">Currency:</span> {{orderToPrint.currency}}</p>
+          <p><span class="bold">Item Description:</span> {{orderToPrint.itemDescription}}</p>
+          <p><span class="bold">Comment:</span> {{orderToPrint.comment}}</p>
+          <p><span class="bold">Creation Date:</span> {{orderToPrint.created_at | date: 'M/d/yy,h:mm a'}}</p>
+          <p><span class="bold">Creation By:</span> {{orderToPrint.createdBy}}</p>
+        </div>
+      </div>
+    </div>
+    <hr>
+  </div>
+</div>

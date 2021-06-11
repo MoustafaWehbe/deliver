@@ -1,0 +1,22 @@
+<app-layout>
+  <mat-toolbar class="page-header" role="heading">
+    <h1>Orders in progress</h1>
+    <div>
+      <mat-form-field appearance="fill" style="margin-right: 10px;">
+        <mat-label>Orders After:</mat-label>
+        <input matInput [matDatepicker]="picker" [value]="selectedDate" (dateInput)="addEvent('input', $event)"
+          (dateChange)="addEvent('change', $event)">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <button mat-raised-button color="primary" class="orders-table-wrapper__transferBtn inline-block"
+        (click)="generateCsvAssignedOrders()">Export assigned orders</button>
+    </div>
+  </mat-toolbar>
+
+  <div class="tables-wrapper">
+    <app-orders-table [status]="status" [transfered]="false" [reload]="reload"></app-orders-table>
+  </div>
+
+  <app-footer></app-footer>
+</app-layout>

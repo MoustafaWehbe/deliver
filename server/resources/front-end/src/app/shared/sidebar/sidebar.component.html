@@ -1,0 +1,37 @@
+<mat-list>
+  <mat-list-item routerLink="{{routes.DASHBOARD}}" *ngIf="userRole!='client'" routerLinkActive="active">
+    <mat-icon>border_all</mat-icon> Dashboard
+  </mat-list-item>
+  <mat-list-item routerLink="{{routes.Users}}" *ngIf="userRole=='admin'" routerLinkActive="active">
+    <mat-icon>border_all</mat-icon> Users
+  </mat-list-item>
+  <mat-list-item routerLink="{{routes.Drivers}}" routerLinkActive="active" *ngIf="userRole=='admin'">
+    <mat-icon>border_all</mat-icon> Drivers
+  </mat-list-item>
+  <mat-list-item routerLink="{{routes.BRANCHES}}" routerLinkActive="active" *ngIf="userRole=='admin'">
+    <mat-icon>notifications_none</mat-icon> Branches
+  </mat-list-item>
+  <mat-list-item (click)="openUiElements()">
+    <mat-icon>filter_none</mat-icon> Orders
+  </mat-list-item>
+  <div>
+    <mat-list-item class="ui-element" routerLink="{{routes.ORDERS_PENDING}}" routerLinkActive="active">
+      <div class="circle"></div>Pending
+    </mat-list-item>
+    <mat-list-item class="ui-element" routerLink="{{routes.ORDERS_SPOT}}" routerLinkActive="active">
+      <div class="circle"></div>Spot Orders
+    </mat-list-item>
+    <mat-list-item class="ui-element" routerLink="{{routes.ORDERS_TRANSFERED}}" routerLinkActive="active">
+      <div class="circle"></div>Transfered
+    </mat-list-item>
+    <mat-list-item class="ui-element" routerLink="{{routes.ORDERS_RETURNED}}" routerLinkActive="active">
+      <div class="circle"></div>Returned
+    </mat-list-item>
+    <mat-list-item class="ui-element" routerLink="{{routes.ORDERS_CANCELED}}" routerLinkActive="active">
+      <div class="circle"></div>Canceled
+    </mat-list-item>
+    <mat-list-item class="ui-element" routerLink="{{routes.ORDERS_FINIDHED}}" routerLinkActive="active">
+      <div class="circle"></div>Finished
+    </mat-list-item>
+  </div>
+</mat-list>

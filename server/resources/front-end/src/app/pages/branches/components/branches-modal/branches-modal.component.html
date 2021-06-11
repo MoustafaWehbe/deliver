@@ -1,0 +1,14 @@
+<mat-dialog-content class="mat-typography">
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  <label id="example-radio-group-label">select a branch: </label>
+  <mat-radio-group aria-labelledby="example-radio-group-label" name="bList" class="example-radio-group"
+    [(ngModel)]="selectedBranch">
+    <mat-radio-button class="example-radio-button" name="bList" *ngFor="let branch of branches" [value]="branch">
+      {{branch.name}}
+    </mat-radio-button>
+  </mat-radio-group>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close (click)="close(false)">Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="close(true)">Select</button>
+</mat-dialog-actions>

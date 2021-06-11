@@ -1,0 +1,19 @@
+<mat-dialog-content class="mat-typography">
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  <!-- <label id="example-radio-group-label">select a driver: </label> -->
+  <form class="example-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>Select a driver</mat-label>
+      <input type="text" placeholder="pick one" matInput [formControl]="myControl" [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="getDisplayName">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+          {{option['name']}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close (click)="close(false)">Cancel</button>
+  <button mat-button [mat-dialog-close]="false" cdkFocusInitial (click)="close(true)">Select</button>
+</mat-dialog-actions>

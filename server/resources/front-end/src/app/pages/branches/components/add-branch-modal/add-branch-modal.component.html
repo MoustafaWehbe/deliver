@@ -1,0 +1,15 @@
+<mat-dialog-content>
+  <form class="form" [formGroup]="branchesForm" (ngSubmit)="submitForm()">
+    <mat-form-field class="form__input">
+      <input matInput placeholder="Branch name" type="text" formControlName="name">
+    </mat-form-field><br>
+    <mat-checkbox formControlName="isMain">
+      Is main?
+    </mat-checkbox>
+    <br>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close (click)="close()">Cancel</button>
+  <button mat-button cdkFocusInitial (click)="submitForm()">{{mainObj.action}}</button>
+</mat-dialog-actions>

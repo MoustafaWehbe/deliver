@@ -1,0 +1,79 @@
+<mat-card class="orders-table-wrapper">
+
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  <mat-card-title class="orders-table-wrapper__header">
+    <p *ngIf="!isShowFilterInput" class="orders-table-wrapper__title">Users List</p>
+    <div *ngIf="isShowFilterInput" class="orders-table-wrapper__search">
+      <div class="orders-table-wrapper__icon-wrapper">
+        <mat-icon class="orders-table-wrapper__icon">search</mat-icon>
+      </div>
+      <input matInput class="orders-table-wrapper__search-input" (keyup)="applyFilter($event)">
+      <button class="orders-table-wrapper__button" mat-mini-fab (click)="showFilterInput()">
+        <mat-icon class="orders-table-wrapper__icon">close</mat-icon>
+      </button>
+    </div>
+    <div>
+      <button mat-flat-button color="warn" class="orders-table-wrapper__deleteBtn"
+        (click)="deleteSelected()">Delete</button>
+
+      <button class="orders-table-wrapper__button" mat-mini-fab (click)="showFilterInput()">
+        <mat-icon class="orders-table-wrapper__icon">search</mat-icon>
+      </button>
+    </div>
+
+  </mat-card-title>
+  <mat-card-content class="orders-table__content">
+    <table class="orders-table__table" mat-table [dataSource]="dataSource" *ngIf="!isLoading">
+
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th class="orders-table__table-checkbox" mat-header-cell *matHeaderCellDef>
+          <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+          </mat-checkbox>
+        </th>
+        <td class="orders-table__table-checkbox" mat-cell *matCellDef="let row">
+          <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
+            [aria-label]="checkboxLabel(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="username">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> User name</th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.userName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Email </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="phone">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Phone </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.phone }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="locationAddress">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Location Address </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.locationAddress}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="companyName">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Company Name </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.companyName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th class="orders-table__table-header" mat-header-cell *matHeaderCellDef> Role </th>
+        <td class="orders-table__table-body" mat-cell *matCellDef="let element"> {{element.role}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+      </tr>
+    </table>
+  </mat-card-content>
+</mat-card>

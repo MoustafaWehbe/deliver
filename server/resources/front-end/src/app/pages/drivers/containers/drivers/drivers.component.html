@@ -1,0 +1,13 @@
+<app-layout>
+  <mat-toolbar class="page-header" role="heading">
+    <h1>Drivers</h1>
+    <button mat-raised-button color="primary" class="orders-table-wrapper__transferBtn" (click)="createDriver()">Create
+      Driver</button>
+  </mat-toolbar>
+
+  <div class="tables-wrapper">
+    <app-drivers-table [reload]="reload"></app-drivers-table>
+  </div>
+
+  <app-footer></app-footer>
+</app-layout>
